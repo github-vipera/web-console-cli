@@ -9,6 +9,7 @@ var nopt = require('nopt');
 var help = require('./help');
 var pkg = require('../package.json');
 var CreateCommand = require('./commands/create');
+var PackCommand = require('./commands/pack');
 
 module.exports = function (inputArgs, cb) {
 
@@ -92,6 +93,9 @@ function cli (inputArgs, cb) {
     if (cmd === 'create'){
         return new CreateCommand().execute(remain, args, cb);
     }
+    if (cmd === 'pack'){
+        return new PackCommand().execute(remain, args, cb);
+    }
 
 
     return printHelp(remain);
@@ -111,7 +115,7 @@ function printHelp (command) {
 }
 
 var knownOpts = {
-    'version': Boolean,
+    'version': String,
     'help': Boolean,
     'name' : String,
     'template' : String
