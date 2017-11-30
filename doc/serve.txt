@@ -1,0 +1,5 @@
+Synopsis
+
+    wc-cli serve [port]
+
+Show syntax summary, or the help for a specific command.

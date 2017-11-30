@@ -1,0 +1,5 @@
+Synopsis
+
+    wc-cli deploy [packedfilename] [remotehost] [context] [active]
+
+Show syntax summary, or the help for a specific command.

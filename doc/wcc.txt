@@ -1,0 +1,55 @@
+Synopsis
+
+    wc-cli command [options]
+
+Global Commands
+    create ............................. Create a module project or a web console console project
+    install ............................ Install a web console module
+    serve .............................. Run project with a local webserver
+    pack ............................... Create a package for the web console project
+    deploy ............................. Deploy a package into a remote MOTIF
+    help ............................... Get help for a command
+
+Project Commands
+    info ............................... Generate project information
+    requirements ....................... Checks and print out all the requirements
+                                            for platforms specified
+
+    platform ........................... Manage project platforms
+    plugin ............................. Manage project plugins
+
+    prepare ............................ Copy files into platform(s) for building
+    compile ............................ Build platform(s)
+    clean .............................. Cleanup project from build artifacts
+
+    run ................................ Run project
+                                            (including prepare && compile)
+    serve .............................. Run project with a local webserver
+                                            (including prepare)
+
+Learn more about command options using 'wc-cli help <command>'
+
+Aliases
+    build -> wc-cli prepare && wc-cli compile
+    emulate -> wc-cli run --emulator
+
+Options
+    -v, --version ...................... prints out this utility's version
+    -d, --verbose ...................... debug mode produces verbose log output for all activity,
+    --no-update-notifier ............... disables check for CLI updates
+    --nohooks .......................... suppress executing hooks
+                                         (taking RegExp hook patterns as parameters)
+
+Examples
+    wc-cli create myApp org.apache.cordova.myApp myApp
+    wc-cli plugin add cordova-plugin-camera
+    wc-cli platform add android
+    wc-cli plugin add cordova-plugin-camera --nosave
+    wc-cli platform add android --nosave
+    wc-cli requirements android
+    wc-cli build android --verbose
+    wc-cli run android
+    wc-cli build android --release -- --keystore="..\android.keystore" --storePassword=android --alias=mykey
+    wc-cli config ls
+    wc-cli platform add ios --nofetch
+    wc-cli plugin add cordova-plugin-camera --nofetch
