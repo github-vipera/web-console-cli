@@ -1,5 +1,5 @@
 Synopsis
 
-    wc-cli pack [outfilename] [version]
+    wc-cli pack -n [name] -v [version]
 
 Show syntax summary, or the help for a specific command.
