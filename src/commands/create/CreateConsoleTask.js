@@ -82,6 +82,11 @@ CreateConsoleTask.prototype.modifyModule = function() {
     packageJson.name = this.moduleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
 
+    let angularCliJsonFile = path.joint(this.prjTempFolder, ".angular-cli.json");
+    let angularCliJson = jsonfile.readFileSync(angularCliJsonFile);
+    angularCliJson.project.name = this.moduleName;
+    jsonfile.writeFileSync(angularCliJsonFile, angularCliJson,   {spaces: 2, EOL: '\r\n'});
+
 }
 
 CreateConsoleTask.prototype.cleanTempFolder = function() {
