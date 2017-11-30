@@ -9,7 +9,7 @@ var path = require('path');
 const fs = require('fs-extra')
 
 var CreateModuleTask = require("./create/CreateModuleTask");
-var CreateConsoleTask = require("create/CreateConsoleTask");
+var CreateConsoleTask = require("./create/CreateConsoleTask");
 
 /**
  *
