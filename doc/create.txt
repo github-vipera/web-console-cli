@@ -1,11 +1,11 @@
 Synopsis
 
   Create a new module
-    wc-cli create module [moduleName]
-    wc-cli create module [moduleName] [templateName]
+    wc-cli create module -n [moduleName]
+    wc-cli create module -n [moduleName] -t [templateName]
 
   Create a new Web Console
-    wc-cli create console [consoleName]
-    wc-cli create console [consoleName] [templateName]
+    wc-cli create console -n [consoleName]
+    wc-cli create console -n [consoleName] -t [templateName]
 
 Show syntax summary, or the help for a specific command.

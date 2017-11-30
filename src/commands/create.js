@@ -9,6 +9,7 @@ var path = require('path');
 const fs = require('fs-extra')
 
 var CreateModuleTask = require("./create/CreateModuleTask");
+var CreateConsoleTask = require("create/CreateConsoleTask");
 
 /**
  *
@@ -22,15 +23,22 @@ CreateCommand.prototype.execute = function(commands, args, callback) {
 
     let subCommand = commands[1];
 
-    //console.log(chalk.red.bold("Executing create command...",commands, JSON.stringify(args), callback));
-
     if (subCommand==='module'){
         return this.executeCreateModule(commands, args, callback);
+    }
+    else if (subCommand==='console'){
+        return this.executeCreateConsole(commands, args, callback);
     }
 
     return -1;
 }
 
+CreateCommand.prototype.executeCreateConsole = function(commands, args, callback) {
+
+    let task = new CreateConsoleTask();
+    task.runTask(commands, args, callback);
+
+}
 
 CreateCommand.prototype.executeCreateModule = function(commands, args, callback) {
 
@@ -38,42 +46,6 @@ CreateCommand.prototype.executeCreateModule = function(commands, args, callback)
 
     let task = new CreateModuleTask();
     task.runTask(commands, args, callback);
-
-    /*
-    let moduleName = args.name;
-    let template = 'default';
-    if (args.template){
-        //download this template
-        template = args.template;
-    }
-
-    let repoPath = this.repoPathForTemplate(template);
-    if (!repoPath){
-        console.log(chalk.red.bold("Unknown module template unknown: '" + template+ "'"));
-        return -1;
-    }
-
-    //creating a temporary folder
-    var tmpobj = tmp.dirSync();
-    console.log('Dir: ', tmpobj.name);
-    var tempFolder = path.join(tmpobj.name, moduleName);
-    console.log("Cloning from repo " + repoPath +" ...  to '"+ tempFolder + "'");
-
-    git()
-        .clone(repoPath, tempFolder )
-        .then(status => {
-            console.log("Status: " , status);
-            // Manual cleanup
-            fs.removeSync(tmpobj.name);
-        })
-        .catch(err => {
-            console.log("Error: " , err);
-            // Manual cleanup
-            fs.removeSync(tmpobj.name);
-        });
-
-    //console.log(chalk.red.bold("Executing create module: ",moduleName, template));
-    */
 
 }
 
