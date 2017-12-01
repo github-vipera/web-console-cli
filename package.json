@@ -1,6 +1,6 @@
 {
   "name": "web-console-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Web Console CLI",
   "main": "wcc",
   "bin": {
@@ -22,6 +22,7 @@
     "q": "^1.5.1",
     "simple-git": "^1.83.0",
     "tmp": "0.0.33",
-    "unirest": "^0.5.1"
+    "unirest": "^0.5.1",
+    "update-notifier": "^2.3.0"
   }
 }

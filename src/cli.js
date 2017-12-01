@@ -10,6 +10,7 @@ var help = require('./help');
 var pkg = require('../package.json');
 var CreateCommand = require('./commands/CreateCommand');
 var DeployCommand = require('./commands/DeployCommand');
+var updateNotifier = require('update-notifier');
 
 module.exports = function (inputArgs, cb) {
 
@@ -45,8 +46,9 @@ module.exports = function (inputArgs, cb) {
 
 function cli (inputArgs, cb) {
 
+    checkForUpdates();
+
     var args = nopt(knownOpts, shortHands, inputArgs);
-    //console.log(args);
 
     process.on('uncaughtException', function (err) {
         if (err.message) {
@@ -115,6 +117,26 @@ function printHelp (command) {
     var result = help([command]);
     console.log(chalk.green(result));
 }
+
+function checkForUpdates () {
+    try {
+        // Checks for available update and returns an instance
+        var notifier = updateNotifier({
+            pkg: pkg
+        });
+        // Notify using the built-in convenience method
+        notifier.notify();
+    } catch (e) {
+        // https://issues.apache.org/jira/browse/CB-10062
+        if (e && e.message && /EACCES/.test(e.message)) {
+            console.log('Update notifier was not able to access the config file.\n' +
+                'You may grant permissions to the file: \'sudo chmod 744 ~/.config/configstore/update-notifier-cordova.json\'');
+        } else {
+            throw e;
+        }
+    }
+}
+
 
 var knownOpts = {
     'version': String,
