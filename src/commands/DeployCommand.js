@@ -45,9 +45,10 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
         if (!args.offline){
             this.remoteHost = args["remote-host"];
             this.deployRemote(zipFileName, (success)=>{
-                //TODO!! publish
-
+                callback();
+                //TODO!!
             }, (failure)=>{
+                callback();
                 //TODO!!
 
             });
@@ -55,6 +56,7 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
             this.spinner = this.spinner.succeed("Deploy done.");
         }
     }, (error)=>{
+        console.err(error);
         this.spinner = this.spinner.fail("Preparing distribution file error: " + error);
         return -1;
     });
@@ -92,24 +94,29 @@ DeployCommand.prototype.createZip = function(success, error) {
 
 }
 
-
 DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
 
-    this.spinner = this.spinner.start("Deploying remotely");
+    this.spinner = this.spinner.start("Deploying remotely to " + this.remoteHost);
 
-    unirest.post(this.remoteHost + '/rest/webcont/bundle/publish')
-        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
-        .send({ "parameter": 23, "foo": "bar" })
-        .end((response)=> {
-            if (response.error){
-                this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
-                failure(response.error);
-                return;
-            } else {
-                this.spinner = this.spinner.succeed("Remote deploy done.");
-                success();
-            }
-        });
+    try {
+
+        let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
+        //remoteUrl = 'http://mockbin.com/request';
+        unirest.post(remoteUrl)
+            .headers({'Content-Type': 'multipart/form-data'})
+            .field('parameter', 'value') // Form field
+            .attach('file', "./" + zipFileName) // Attachment
+            .timeout(3000)
+            .end(function(response) {
+                console.error(response);
+            });
+
+    } catch (ex){
+        //this.spinner = this.spinner.fail("Remote deploy failure: " + ex);
+        //failure(ex);
+        console.error("ERROR FATAL: " , ex);
+    }
+
 
 }
 

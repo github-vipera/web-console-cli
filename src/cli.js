@@ -21,7 +21,9 @@ module.exports = function (inputArgs, cb) {
     /**
      * mainly used for testing.
      */
-    cb = cb || function () {};
+    cb = cb || function () {
+        console.log("Command Finished!")
+    };
 
     // If no inputArgs given, use process.argv.
     inputArgs = inputArgs || process.argv;
@@ -122,7 +124,8 @@ var knownOpts = {
     'template' : String,
     'description' : String,
     'offline' : Boolean,
-    'remote-host' : String
+    'remote-host' : String,
+    'publish' : String
 };
 
 var shortHands = {
@@ -132,7 +135,8 @@ var shortHands = {
     'n': '--name',
     'd': '--description',
     'o': '--offline',
-    'r': '--remote-host'
+    'r': '--remote-host',
+    'p': '--publish'
 };
 
 /*
