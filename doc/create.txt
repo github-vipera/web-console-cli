@@ -8,4 +8,8 @@ Synopsis
     wc-cli create console -n [consoleName]
     wc-cli create console -n [consoleName] -t [templateName]
 
+Options
+    -n, --name .......................... the new mondule/console application name
+    -t, --template ...................... the template for the new module/console application, by default 'default' is used
+
 Show syntax summary, or the help for a specific command.

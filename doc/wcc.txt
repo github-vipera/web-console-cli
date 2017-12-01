@@ -10,46 +10,13 @@ Global Commands
     deploy ............................. Deploy a package into a remote MOTIF
     help ............................... Get help for a command
 
-Project Commands
-    info ............................... Generate project information
-    requirements ....................... Checks and print out all the requirements
-                                            for platforms specified
-
-    platform ........................... Manage project platforms
-    plugin ............................. Manage project plugins
-
-    prepare ............................ Copy files into platform(s) for building
-    compile ............................ Build platform(s)
-    clean .............................. Cleanup project from build artifacts
-
-    run ................................ Run project
-                                            (including prepare && compile)
-    serve .............................. Run project with a local webserver
-                                            (including prepare)
-
 Learn more about command options using 'wc-cli help <command>'
 
-Aliases
-    build -> wc-cli prepare && wc-cli compile
-    emulate -> wc-cli run --emulator
-
-Options
-    -v, --version ...................... prints out this utility's version
-    -d, --verbose ...................... debug mode produces verbose log output for all activity,
-    --no-update-notifier ............... disables check for CLI updates
-    --nohooks .......................... suppress executing hooks
-                                         (taking RegExp hook patterns as parameters)
-
 Examples
-    wc-cli create myApp org.apache.cordova.myApp myApp
-    wc-cli plugin add cordova-plugin-camera
-    wc-cli platform add android
-    wc-cli plugin add cordova-plugin-camera --nosave
-    wc-cli platform add android --nosave
-    wc-cli requirements android
-    wc-cli build android --verbose
-    wc-cli run android
-    wc-cli build android --release -- --keystore="..\android.keystore" --storePassword=android --alias=mykey
-    wc-cli config ls
-    wc-cli platform add ios --nofetch
-    wc-cli plugin add cordova-plugin-camera --nofetch
+
+    wc-cli create module -n my-admin-module
+    wc-cli create module -n my-clock-module -t web-console-clock-template
+    wc-cli create console -n my-web-admin
+    wc-cli pack -n my-web-admin -v 1.0.0
+    wc-cli deploy my-web-admin_1.0.0.zip -h https://remote.motif.com:8080/
+

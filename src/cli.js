@@ -45,7 +45,7 @@ module.exports = function (inputArgs, cb) {
 function cli (inputArgs, cb) {
 
     var args = nopt(knownOpts, shortHands, inputArgs);
-    console.log(args);
+    //console.log(args);
 
     process.on('uncaughtException', function (err) {
         if (err.message) {
@@ -58,8 +58,9 @@ function cli (inputArgs, cb) {
 
     var cliVersion = require('../package').version;
 
-    console.log(chalk.blue.bold("MOTIF Web Console CLI - Vipera © 2017" , cliVersion));
-    console.log(chalk.blue.bold("Version " , cliVersion));
+    console.log('');
+    console.log(chalk.blue.bold("MOTIF Web Console CLI - Vipera © 2017"));
+    console.log(chalk.blue("Version " , cliVersion));
     console.log('');
 
     // If there were arguments protected from nopt with a double dash, keep
