@@ -89,8 +89,9 @@ DeployCommand.prototype.createZip = function(success, error) {
     var zip = new EasyZip();
     zip.zipContentFolder('./dist',function(){
         let zipFileName = self.descriptor.name + "_" + self.descriptor.version +".zip";
-        zip.writeToFile('./' + zipFileName);
-        success(zipFileName);
+        zip.writeToFile('./' + zipFileName, (ok)=>{
+            success(zipFileName);
+        });
     });
 
 }
@@ -103,11 +104,11 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
     try {
 
         let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
-        let localFileToUpload = "./" + zipFileName;
+        let localFileToUpload = path.resolve("./" + zipFileName);
 
         unirest.post(remoteUrl)
             .headers({'Content-Type': 'multipart/form-data'})
-            .field('parameter', 'value') // Form field
+            .field('overwrite', 'true')
             .auth({
                 user: this.commandArgs.user,
                 pass: this.commandArgs.passwd,
