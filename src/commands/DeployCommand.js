@@ -11,6 +11,7 @@ var path = require('path');
 const fs = require('fs-extra')
 var jsonfile = require('jsonfile');
 var EasyZip = require('easy-zip').EasyZip;
+var unirest = require('unirest');
 
 /**
  *
@@ -42,7 +43,13 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
     this.createZip((zipFileName)=>{
         this.spinner = this.spinner.succeed("Distribution file ready " + zipFileName);
         if (!args.offline){
-            this.deployRemote(zipFileName);
+            this.deployRemote(zipFileName, (success)=>{
+                //TODO!! publish
+
+            }, (failure)=>{
+                //TODO!!
+
+            });
         } else {
             this.spinner = this.spinner.succeed("Deploy done.");
         }
@@ -85,15 +92,32 @@ DeployCommand.prototype.createZip = function(success, error) {
 }
 
 
-DeployCommand.prototype.deployRemote = function(zipFileName) {
+DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
 
     this.spinner = this.spinner.start("Deploying remotely");
 
-    //TODO!!
-
-    this.spinner = this.spinner.succeed("Remote deploy done.");
+    unirest.post('http://localhost:8080/rest/webcont/bundle/publish')
+        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+        .send({ "parameter": 23, "foo": "bar" })
+        .end((response)=> {
+            if (response.error){
+                this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
+                failure(response.error);
+                return;
+            } else {
+                this.spinner = this.spinner.succeed("Remote deploy done.");
+                success();
+            }
+        });
 
 }
+
+DeployCommand.prototype.publishRemote = function(success, failure) {
+
+    //TODO!!
+
+}
+
 
 EasyZip.prototype.zipContentFolder = function(folder, callback, options) {
     if(!fs.existsSync(folder)){
