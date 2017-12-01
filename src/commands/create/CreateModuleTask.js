@@ -44,8 +44,9 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
     this.prepareFolders();
     //console.log("Folders ready");
 
-    this.cloneTemplateRepo().then(status => {
-        //console.log("Clone done!");
+    this.spinner = this.spinner.start("Cloning from repo " + this.repoPath +"...");
+
+    this.cloneTemplateRepo().then(() => {
         this.spinner = this.spinner.succeed("Module template clone done.");
         this.modifyModule();
         this.moveTempModule();
@@ -59,7 +60,7 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
         console.log("Enjoy!");
         console.log("");
         this.cleanTempFolder();
-    }).catch(err => {
+    }).catch((err) => {
         console.log("Error: ", err);
         console.log("");
         this.cleanTempFolder();
@@ -98,10 +99,11 @@ CreateModuleTask.prototype.cleanTempFolder = function() {
 }
 
 CreateModuleTask.prototype.cloneTemplateRepo = function(template) {
-    this.spinner.text = "Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'";
-    //console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
     //Clone the repo
-    return git().clone(this.repoPath, this.prjTempFolder);
+    return git().outputHandler((command, stdout, stderr) => {
+        //stdout.pipe(process.stdout);
+        //stderr.pipe(process.stderr);
+    }).clone(this.repoPath, this.prjTempFolder);
 }
 
 

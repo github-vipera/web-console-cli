@@ -46,12 +46,17 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
         if (!this.commandArgs.offline){
             this.remoteHost = this.commandArgs["remote-host"];
             this.deployRemote(zipFileName, (success)=>{
-                callback();
-                //TODO!!
+                if (this.commandArgs.publish){
+                    this.publish((success)=>{
+                        callback();
+                    }, (failure)=>{
+                        callback();
+                    });
+                } else {
+                    callback();
+                }
             }, (failure)=>{
                 callback();
-                //TODO!!
-
             });
         } else {
             this.spinner = this.spinner.succeed("Deploy done.");
@@ -134,7 +139,38 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
 
 DeployCommand.prototype.publishRemote = function(success, failure) {
 
-    //TODO!!
+    this.spinner = this.spinner.start("Publishing remotely to " + this.remoteHost);
+
+    try {
+
+        let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
+
+        unirest.post(remoteUrl)
+            .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+            .auth({
+                user: this.commandArgs.user,
+                pass: this.commandArgs.passwd,
+                sendImmediately: true
+            })
+            .send({
+                "name": this.descriptor.name,
+                "version": this.descriptor.version,
+                "context" : this.commandArgs.publish
+            })
+            .end((response) => {
+                if (response.error){
+                    this.spinner = this.spinner.fail("Remote publishing failure: " + response.error);
+                    failure(response.error);
+                } else {
+                    this.spinner = this.spinner.succeed("Remote publishing done.");
+                    success();
+                }
+            });
+
+    } catch (ex){
+        this.spinner = this.spinner.fail("Remote publishing failure: " + ex);
+        failure(ex);
+    }
 
 }
 

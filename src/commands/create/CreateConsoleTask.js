@@ -50,8 +50,9 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
     this.prepareFolders();
     //console.log("Folders ready");
 
+    this.spinner = this.spinner.start("Cloning from repo " + this.repoPath +"...");
+
     this.cloneTemplateRepo().then(status => {
-        //console.log("Clone done!");
         this.spinner = this.spinner.succeed("Console template clone done.");
         this.modifyModule();
         this.moveTempModule();
@@ -122,9 +123,11 @@ CreateConsoleTask.prototype.cleanTempFolder = function() {
 }
 
 CreateConsoleTask.prototype.cloneTemplateRepo = function(template) {
-    this.spinner.text = "Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'";
     //Clone the repo
-    return git().clone(this.repoPath, this.prjTempFolder);
+    return git().outputHandler((command, stdout, stderr) => {
+        //stdout.pipe(process.stdout);
+        //stderr.pipe(process.stderr);
+    }).clone(this.repoPath, this.prjTempFolder);
 }
 
 
