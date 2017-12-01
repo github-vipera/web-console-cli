@@ -43,6 +43,7 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
     this.createZip((zipFileName)=>{
         this.spinner = this.spinner.succeed("Distribution file ready " + zipFileName);
         if (!args.offline){
+            this.remoteHost = args["remote-host"];
             this.deployRemote(zipFileName, (success)=>{
                 //TODO!! publish
 
@@ -96,7 +97,7 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
 
     this.spinner = this.spinner.start("Deploying remotely");
 
-    unirest.post('http://localhost:8080/rest/webcont/bundle/publish')
+    unirest.post(this.remoteHost + '/rest/webcont/bundle/publish')
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         .send({ "parameter": 23, "foo": "bar" })
         .end((response)=> {

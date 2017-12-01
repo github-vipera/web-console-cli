@@ -121,7 +121,8 @@ var knownOpts = {
     'name' : String,
     'template' : String,
     'description' : String,
-    'offline' : Boolean
+    'offline' : Boolean,
+    'remote-host' : String
 };
 
 var shortHands = {
@@ -130,7 +131,8 @@ var shortHands = {
     't': '--template',
     'n': '--name',
     'd': '--description',
-    'o': '--offline'
+    'o': '--offline',
+    'r': '--remote-host'
 };
 
 /*
