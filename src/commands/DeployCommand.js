@@ -143,7 +143,7 @@ DeployCommand.prototype.publishRemote = function(success, failure) {
 
     try {
 
-        let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
+        let remoteUrl = this.remoteHost + '/rest/webcont/bundle/publish';
 
         unirest.post(remoteUrl)
             .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
