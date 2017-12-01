@@ -1,6 +1,6 @@
 {
   "name": "web-console-cli",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Web Console CLI",
   "main": "wcc",
   "bin": {
