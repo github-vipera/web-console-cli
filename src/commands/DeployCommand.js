@@ -114,7 +114,6 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
                 sendImmediately: true
             })
             .attach('file', localFileToUpload) // Attachment
-            .timeout(3000)
             .end((response) => {
                 if (response.error){
                     this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
