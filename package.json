@@ -1,6 +1,6 @@
 {
   "name": "web-console-cli",
-  "version": "1.0.4",
+  "version": "1.0.3",
   "description": "Web Console CLI",
   "main": "wcc",
   "bin": {
@@ -9,13 +9,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marco Bonati, 2017 (C) Vipera Srl",
+  "author": "Marco Bonati",
   "license": "Vipera Commercial",
   "repository": {
     "type": "git",
     "url": "https://github.com/github-vipera/web-console-cli"
   },
-  "author": "Marco Bonati",
   "dependencies": {
     "chalk": "^2.3.0",
     "easy-zip": "0.0.4",
@@ -28,6 +27,7 @@
     "simple-git": "^1.83.0",
     "tmp": "0.0.33",
     "unirest": "^0.5.1",
-    "update-notifier": "^2.3.0"
+    "update-notifier": "^2.3.0",
+    "update-notifier-plus": "^1.0.1"
   }
 }

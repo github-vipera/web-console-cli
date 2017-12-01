@@ -7,10 +7,10 @@ var path = require('path');
 var Q = require('q');
 var nopt = require('nopt');
 var help = require('./help');
-var pkg = require('../package.json');
 var CreateCommand = require('./commands/CreateCommand');
 var DeployCommand = require('./commands/DeployCommand');
-var updateNotifier = require('update-notifier');
+const updateNotifier = require('update-notifier-plus');
+const pkg = require('../package.json');
 
 module.exports = function (inputArgs, cb) {
 
@@ -122,7 +122,9 @@ function checkForUpdates () {
     try {
         // Checks for available update and returns an instance
         var notifier = updateNotifier({
-            pkg: pkg
+            pkg : pkg,
+            registry: 'github',
+            githubOwner: 'vipera'
         });
         // Notify using the built-in convenience method
         notifier.notify();
