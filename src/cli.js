@@ -9,7 +9,7 @@ var nopt = require('nopt');
 var help = require('./help');
 var pkg = require('../package.json');
 var CreateCommand = require('./commands/CreateCommand');
-var PackCommand = require('./commands/PackCommand');
+var DeployCommand = require('./commands/DeployCommand');
 
 module.exports = function (inputArgs, cb) {
 
@@ -94,8 +94,8 @@ function cli (inputArgs, cb) {
     if (cmd === 'create'){
         return new CreateCommand().execute(remain, args, cb);
     }
-    if (cmd === 'pack'){
-        return new PackCommand().execute(remain, args, cb);
+    if (cmd === 'deploy'){
+        return new DeployCommand().execute(remain, args, cb);
     }
 
 
@@ -120,7 +120,8 @@ var knownOpts = {
     'help': Boolean,
     'name' : String,
     'template' : String,
-    'description' : String
+    'description' : String,
+    'offline' : Boolean
 };
 
 var shortHands = {
@@ -128,7 +129,8 @@ var shortHands = {
     'h': '--help',
     't': '--template',
     'n': '--name',
-    'd': '--description'
+    'd': '--description',
+    'o': '--offline'
 };
 
 /*

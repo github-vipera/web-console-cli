@@ -2,9 +2,7 @@
  * Created by marcobonati on 30/11/2017.
  */
 
-/**
- * Created by marcobonati on 30/11/2017.
- */
+const ora = require('ora');
 const chalk = require('chalk');
 var Q = require("q");
 const git = require('simple-git/promise');
@@ -18,59 +16,74 @@ var EasyZip = require('easy-zip').EasyZip;
  *
  * @constructor
  */
-function PackCommand(){
+function DeployCommand(){
 
 }
 
-PackCommand.prototype.execute = function(commands, args, callback) {
+DeployCommand.prototype.execute = function(commands, args, callback) {
 
-    this.appName = args.name;
-
-    this.appVersion = '1.0.0';
-    if (args.version){
-        this.appVersion = args.version;
-    }
+    this.spinner = ora('Deploying Console App...').start();
 
     let distFolderExists = fs.existsSync("./dist");
-
     if (!distFolderExists){
-        console.log(chalk.red.bold("Dist folder not found. Run 'npm run build' command before and retry."));
+        //console.log(chalk.red.bold("Dist folder not found. Run 'npm run build' command before and retry."));
+        this.spinner.fail("Dist folder not found. Run 'npm run build' command before and retry.");
         return -1;
     }
 
-    this.createDescriptor();
+    let descriptorFileExists = fs.existsSync("./webconsole.descriptor.json");
+    if (!descriptorFileExists){
+        this.spinner.fail("'webconsole.descriptor.json' file not found.");
+        return -1;
+    }
 
-    this.createZip();
+    this.readDescriptor();
+
+    this.createZip((zipFileName)=>{
+        this.spinner = this.spinner.succeed("Distribution file ready " + zipFileName);
+        if (!args.offline){
+            this.deployRemote(zipFileName);
+        } else {
+            this.spinner = this.spinner.succeed("Deploy done.");
+        }
+
+    });
 
     return 0;
 }
 
-PackCommand.prototype.createZip= function() {
+DeployCommand.prototype.readDescriptor = function() {
+    this.spinner = this.spinner.start("Reading descriptor file");
+    let webConsoleDescriptorJsonFile = path.join( ".", "webconsole.descriptor.json");
+    this.descriptor = jsonfile.readFileSync(webConsoleDescriptorJsonFile);
+    this.spinner = this.spinner.succeed("The descriptor file has been read.");
+}
 
-    console.log("Creating zip file...");
+DeployCommand.prototype.createZip = function(callback) {
+
+    this.spinner = this.spinner.start("Creating distribution file");
 
     var self = this;
 
     var zip = new EasyZip();
     zip.zipContentFolder('./dist',function(){
-        zip.writeToFile('./' + self.appName + "_" + self.appVersion +".zip");
-        console.log(chalk.green.bold("Pack done!"));
+        let zipFileName = self.descriptor.name + "_" + self.descriptor.version +".zip";
+        zip.writeToFile('./' + zipFileName);
+        callback(zipFileName);
     });
 
 }
 
-PackCommand.prototype.createDescriptor = function() {
 
-    this.descriptor = {
-        "name" : this.appName,
-        "version" : this.appVersion
-    }
+DeployCommand.prototype.deployRemote = function(zipFileName) {
 
-    let fileName = "./dist/descriptor.json";
-    jsonfile.writeFileSync(fileName, this.descriptor,   {spaces: 2, EOL: '\r\n'});
+    this.spinner = this.spinner.start("Deploying remotely");
+
+    //TODO!!
+
+    this.spinner = this.spinner.succeed("Remote deploy done.");
 
 }
-
 
 EasyZip.prototype.zipContentFolder = function(folder, callback, options) {
     if(!fs.existsSync(folder)){
@@ -116,5 +129,7 @@ EasyZip.prototype.zipContentFolder = function(folder, callback, options) {
 
 
 
+
+
 // export the class
-module.exports = PackCommand;
+module.exports = DeployCommand;
