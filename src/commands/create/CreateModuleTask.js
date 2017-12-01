@@ -46,7 +46,7 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
 
     this.cloneTemplateRepo().then(status => {
         //console.log("Clone done!");
-        this.spinner = this.spinner.succeed("Clone done.");
+        this.spinner = this.spinner.succeed("Module template clone done.");
         this.modifyModule();
         this.moveTempModule();
         this.runNpmInstall();
