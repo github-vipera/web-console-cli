@@ -46,7 +46,7 @@ module.exports = function (inputArgs, cb) {
 
 function cli (inputArgs, cb) {
 
-    checkForUpdates();
+    //checkForUpdates();
 
     var args = nopt(knownOpts, shortHands, inputArgs);
 
