@@ -2,6 +2,7 @@
  * Created by marcobonati on 30/11/2017.
  */
 
+const ora = require('ora');
 const chalk = require('chalk');
 const simpleGit = require('simple-git');
 var Q = require("q");
@@ -20,6 +21,8 @@ function CreateModuleTask(){
 
 CreateModuleTask.prototype.runTask= function(commands, args, callback) {
 
+    this.spinner = ora('Creating New Module...').start();
+
     // Check args
     this.moduleName = args.name;
     this.template = 'default';
@@ -31,7 +34,9 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
     // Get Repo URL from template name
     this.repoPath = this.repoPathForTemplate(this.template);
     if (!this.repoPath){
-        console.log(chalk.red.bold("Unknown module template unknown: '" + this.template+ "'"));
+        let errorMsg = "Unknown module template unknown: '" + this.template+ "'";
+        //console.log(chalk.red.bold(errorMsg));
+        this.spinner.fail(errorMsg);
         return -1;
     }
 
@@ -41,11 +46,11 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
 
     this.cloneTemplateRepo().then(status => {
         //console.log("Clone done!");
+        this.spinner = this.spinner.succeed("Clone done.");
         this.modifyModule();
         this.moveTempModule();
         this.runNpmInstall();
-        console.log("");
-        console.log(chalk.green.bold("Creation module done."));
+        this.spinner = this.spinner.succeed("Creation module done.");
         console.log("");
         console.log(chalk.green.bold("Next step are:"));
         console.log(chalk.green.bold("> cd " + this.moduleName));
@@ -54,6 +59,7 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
     }).catch(err => {
         console.log("Error: ", err);
         this.cleanTempFolder();
+        this.spinner.fail(err);
     });
 
     //console.log(chalk.red.bold("Executing create module: ",moduleName, template));
@@ -74,12 +80,12 @@ CreateModuleTask.prototype.moveTempModule = function() {
 
 // Change package.json module name
 CreateModuleTask.prototype.modifyModule = function() {
-
+    this.spinner = this.spinner.start("Preparing new module");
     let packageJsonFile = path.join(this.prjTempFolder, "package.json");
     let packageJson = jsonfile.readFileSync(packageJsonFile);
     packageJson.name = this.moduleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
-
+    this.spinner = this.spinner.succeed("New module prepared");
 }
 
 CreateModuleTask.prototype.cleanTempFolder = function() {
@@ -88,7 +94,8 @@ CreateModuleTask.prototype.cleanTempFolder = function() {
 }
 
 CreateModuleTask.prototype.cloneTemplateRepo = function(template) {
-    console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
+    this.spinner.text = "Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'";
+    //console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
     //Clone the repo
     return git().clone(this.repoPath, this.prjTempFolder);
 }
