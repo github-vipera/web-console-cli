@@ -25,7 +25,12 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
     this.spinner = ora('Creating New Console App...').start();
 
     // Check args
-    this.moduleName = args.name;
+    this.consoleName = args.name;
+    this.description = "";
+    if (args.description){
+        //console app description
+        this.description = args.description;
+    }
     this.template = 'default';
     if (args.template){
         //download this template
@@ -55,7 +60,7 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
         this.spinner = this.spinner.succeed("Creation console done.");
         console.log("");
         console.log(chalk.green.bold("Next step are:"));
-        console.log(chalk.green.bold("> cd " + this.moduleName));
+        console.log(chalk.green.bold("> cd " + this.consoleName));
         console.log(chalk.green.bold("> npm install "));
         console.log(chalk.green.bold("> npm run start "));
         console.log("");
@@ -76,27 +81,37 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
 
 
 CreateConsoleTask.prototype.runNpmInstall = function() {
-    process.chdir('./' + this.moduleName);
+    process.chdir('./' + this.consoleName);
     //console.log("Current folder is ", __dirname);
 }
 
 // Move the module form the temp folder to the current working dir
 CreateConsoleTask.prototype.moveTempModule = function() {
-    fs.moveSync(this.prjTempFolder, './'+this.moduleName);
+    fs.moveSync(this.prjTempFolder, './'+this.consoleName);
 }
 
 // Change package.json module name
 CreateConsoleTask.prototype.modifyModule = function() {
+
+    // Update the package.json file
     this.spinner = this.spinner.start("Preparing new console");
     let packageJsonFile = path.join(this.prjTempFolder, "package.json");
     let packageJson = jsonfile.readFileSync(packageJsonFile);
-    packageJson.name = this.moduleName;
+    packageJson.name = this.consoleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
 
+    // Update the .angular-cli.json file
     let angularCliJsonFile = path.join(this.prjTempFolder, ".angular-cli.json");
     let angularCliJson = jsonfile.readFileSync(angularCliJsonFile);
-    angularCliJson.project.name = this.moduleName;
+    angularCliJson.project.name = this.consoleName;
     jsonfile.writeFileSync(angularCliJsonFile, angularCliJson,   {spaces: 2, EOL: '\r\n'});
+
+    // Update the webconsole.descriptor.json file
+    let webConsoleDescriptorJsonFile = path.join(this.prjTempFolder, "webconsole.descriptor.json");
+    let webConsoleDescriptorJson = jsonfile.readFileSync(webConsoleDescriptorJsonFile);
+    webConsoleDescriptorJson.name = this.consoleName;
+    webConsoleDescriptorJson.description = this.description;
+    jsonfile.writeFileSync(webConsoleDescriptorJsonFile, webConsoleDescriptorJson,   {spaces: 2, EOL: '\r\n'});
 
     this.spinner = this.spinner.succeed("New console prepared.");
 }
@@ -108,7 +123,6 @@ CreateConsoleTask.prototype.cleanTempFolder = function() {
 
 CreateConsoleTask.prototype.cloneTemplateRepo = function(template) {
     this.spinner.text = "Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'";
-    //console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
     //Clone the repo
     return git().clone(this.repoPath, this.prjTempFolder);
 }
@@ -117,7 +131,7 @@ CreateConsoleTask.prototype.cloneTemplateRepo = function(template) {
 CreateConsoleTask.prototype.prepareFolders = function(template) {
     this.tempFolder = this.createTempFolder();
     //console.log('Temp Folder: ', this.tempFolder);
-    this.prjTempFolder = path.join(this.tempFolder, this.moduleName);
+    this.prjTempFolder = path.join(this.tempFolder, this.consoleName);
 }
 
 CreateConsoleTask.prototype.createTempFolder = function(template) {

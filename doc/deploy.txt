@@ -2,4 +2,8 @@ Synopsis
 
     wc-cli deploy [packedfilename] [remotehost] [context] [active]
 
+Options
+    -n, --name .......................... the new mondule/console application name
+    -o, --offline .......................
+
 Show syntax summary, or the help for a specific command.

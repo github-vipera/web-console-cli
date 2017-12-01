@@ -1,6 +1,6 @@
 Synopsis
 
-    wc-cli pack -n [name] -v [version]
+    wc-cli prepare -n [name] -v [version]
 
 Options
     -n, --name .......................... the console application name

@@ -8,8 +8,8 @@ var Q = require('q');
 var nopt = require('nopt');
 var help = require('./help');
 var pkg = require('../package.json');
-var CreateCommand = require('./commands/create');
-var PackCommand = require('./commands/pack');
+var CreateCommand = require('./commands/CreateCommand');
+var PackCommand = require('./commands/PackCommand');
 
 module.exports = function (inputArgs, cb) {
 
@@ -119,14 +119,16 @@ var knownOpts = {
     'version': String,
     'help': Boolean,
     'name' : String,
-    'template' : String
+    'template' : String,
+    'description' : String
 };
 
 var shortHands = {
     'v': '--version',
     'h': '--help',
     't': '--template',
-    'n': '--name'
+    'n': '--name',
+    'd': '--description'
 };
 
 /*
