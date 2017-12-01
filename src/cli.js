@@ -22,7 +22,6 @@ module.exports = function (inputArgs, cb) {
      * mainly used for testing.
      */
     cb = cb || function () {
-        console.log("Command Finished!")
     };
 
     // If no inputArgs given, use process.argv.
@@ -51,9 +50,9 @@ function cli (inputArgs, cb) {
 
     process.on('uncaughtException', function (err) {
         if (err.message) {
-            //logger.error(err.message);
+            console.error("FATAL ERROR: " + err.message, err);
         } else {
-            //logger.error(err);
+            console.error("FATAL ERROR ", err);
         }
         process.exit(1);
     });

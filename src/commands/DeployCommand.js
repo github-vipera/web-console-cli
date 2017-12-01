@@ -29,7 +29,6 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
 
     let distFolderExists = fs.existsSync("./dist");
     if (!distFolderExists){
-        //console.log(chalk.red.bold("Dist folder not found. Run 'npm run build' command before and retry."));
         this.spinner.fail("Dist folder not found. Run 'npm run build' command before and retry.");
         return -1;
     }
@@ -98,11 +97,14 @@ DeployCommand.prototype.createZip = function(success, error) {
 
 DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
 
+
     this.spinner = this.spinner.start("Deploying remotely to " + this.remoteHost);
 
     try {
 
         let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
+        let localFileToUpload = "./" + zipFileName;
+
         unirest.post(remoteUrl)
             .headers({'Content-Type': 'multipart/form-data'})
             .field('parameter', 'value') // Form field
@@ -111,9 +113,9 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
                 pass: this.commandArgs.passwd,
                 sendImmediately: true
             })
-            .attach('file', "./" + zipFileName) // Attachment
+            .attach('file', localFileToUpload) // Attachment
             .timeout(3000)
-            .end(function(response) {
+            .end((response) => {
                 if (response.error){
                     this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
                     failure(response.error);
@@ -127,7 +129,6 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
         this.spinner = this.spinner.fail("Remote deploy failure: " + ex);
         failure(ex);
     }
-
 
 }
 
