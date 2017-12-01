@@ -2,6 +2,7 @@
  * Created by marcobonati on 30/11/2017.
  */
 
+const ora = require('ora');
 const chalk = require('chalk');
 const simpleGit = require('simple-git');
 var Q = require("q");
@@ -21,6 +22,8 @@ function CreateConsoleTask(){
 
 CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
 
+    this.spinner = ora('Creating New Console App...').start();
+
     // Check args
     this.moduleName = args.name;
     this.template = 'default';
@@ -32,7 +35,9 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
     // Get Repo URL from template name
     this.repoPath = this.repoPathForTemplate(this.template);
     if (!this.repoPath){
-        console.log(chalk.red.bold("Unknown module template unknown: '" + this.template+ "'"));
+        let errorMsg = "Unknown console template unknown: '" + this.template+ "'";
+        //console.log(chalk.red.bold(errorMsg));
+        this.spinner.fail(errorMsg);
         return -1;
     }
 
@@ -42,20 +47,26 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
 
     this.cloneTemplateRepo().then(status => {
         //console.log("Clone done!");
+        this.spinner = this.spinner.succeed("Console template clone done.");
         this.modifyModule();
         this.moveTempModule();
         this.runNpmInstall();
         console.log("");
-        console.log(chalk.green.bold("Creation console done."));
+        this.spinner = this.spinner.succeed("Creation console done.");
         console.log("");
         console.log(chalk.green.bold("Next step are:"));
         console.log(chalk.green.bold("> cd " + this.moduleName));
         console.log(chalk.green.bold("> npm install "));
         console.log(chalk.green.bold("> npm run start "));
+        console.log("");
+        console.log("Enjoy!");
+        console.log("");
         this.cleanTempFolder();
     }).catch(err => {
         console.log("Error: ", err);
+        console.log("");
         this.cleanTempFolder();
+        this.spinner.fail(err);
     });
 
     //console.log(chalk.red.bold("Executing create module: ",moduleName, template));
@@ -76,7 +87,7 @@ CreateConsoleTask.prototype.moveTempModule = function() {
 
 // Change package.json module name
 CreateConsoleTask.prototype.modifyModule = function() {
-
+    this.spinner = this.spinner.start("Preparing new console");
     let packageJsonFile = path.join(this.prjTempFolder, "package.json");
     let packageJson = jsonfile.readFileSync(packageJsonFile);
     packageJson.name = this.moduleName;
@@ -87,6 +98,7 @@ CreateConsoleTask.prototype.modifyModule = function() {
     angularCliJson.project.name = this.moduleName;
     jsonfile.writeFileSync(angularCliJsonFile, angularCliJson,   {spaces: 2, EOL: '\r\n'});
 
+    this.spinner = this.spinner.succeed("New console prepared.");
 }
 
 CreateConsoleTask.prototype.cleanTempFolder = function() {
@@ -95,7 +107,8 @@ CreateConsoleTask.prototype.cleanTempFolder = function() {
 }
 
 CreateConsoleTask.prototype.cloneTemplateRepo = function(template) {
-    console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
+    this.spinner.text = "Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'";
+    //console.log("Cloning from repo " + this.repoPath +" ...  to '"+ this.prjTempFolder  + "'");
     //Clone the repo
     return git().clone(this.repoPath, this.prjTempFolder);
 }

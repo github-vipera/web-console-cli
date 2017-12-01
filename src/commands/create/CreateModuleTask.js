@@ -55,9 +55,13 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
         console.log(chalk.green.bold("Next step are:"));
         console.log(chalk.green.bold("> cd " + this.moduleName));
         console.log(chalk.green.bold("> npm install "));
+        console.log("");
+        console.log("Enjoy!");
+        console.log("");
         this.cleanTempFolder();
     }).catch(err => {
         console.log("Error: ", err);
+        console.log("");
         this.cleanTempFolder();
         this.spinner.fail(err);
     });
@@ -85,7 +89,7 @@ CreateModuleTask.prototype.modifyModule = function() {
     let packageJson = jsonfile.readFileSync(packageJsonFile);
     packageJson.name = this.moduleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
-    this.spinner = this.spinner.succeed("New module prepared");
+    this.spinner = this.spinner.succeed("New module prepared.");
 }
 
 CreateModuleTask.prototype.cleanTempFolder = function() {
