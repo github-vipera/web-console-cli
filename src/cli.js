@@ -122,9 +122,10 @@ function checkForUpdates () {
     try {
         // Checks for available update and returns an instance
         var notifier = updateNotifier({
-            pkg : pkg,
+            pkg: pkg,
             registry: 'github',
-            githubOwner: 'vipera'
+            githubOwner: 'github-vipera',
+            updateCheckInterval: 0
         });
         // Notify using the built-in convenience method
         notifier.notify();
