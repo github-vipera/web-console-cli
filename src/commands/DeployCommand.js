@@ -46,7 +46,9 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
         } else {
             this.spinner = this.spinner.succeed("Deploy done.");
         }
-
+    }, (error)=>{
+        this.spinner = this.spinner.fail("Preparing distribution file error: " + error);
+        return -1;
     });
 
     return 0;
@@ -59,17 +61,25 @@ DeployCommand.prototype.readDescriptor = function() {
     this.spinner = this.spinner.succeed("The descriptor file has been read.");
 }
 
-DeployCommand.prototype.createZip = function(callback) {
+DeployCommand.prototype.createZip = function(success, error) {
 
     this.spinner = this.spinner.start("Creating distribution file");
 
     var self = this;
 
+    //move temporarily the  "webconsole.descriptor.json" to ./dist
+    try {
+        fs.copySync('./webconsole.descriptor.json', './dist/webconsole.descriptor.json')
+    } catch (err) {
+        error(err);
+        return;
+    }
+
     var zip = new EasyZip();
     zip.zipContentFolder('./dist',function(){
         let zipFileName = self.descriptor.name + "_" + self.descriptor.version +".zip";
         zip.writeToFile('./' + zipFileName);
-        callback(zipFileName);
+        success(zipFileName);
     });
 
 }
