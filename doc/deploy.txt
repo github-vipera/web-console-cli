@@ -1,9 +1,10 @@
 Synopsis
 
-    wc-cli deploy [packedfilename] [remotehost] [context] [active]
+    wc-cli deploy -h [remotehost] -p [context]
 
 Options
-    -n, --name .......................... the new mondule/console application name
-    -o, --offline .......................
+    -o, --offline ....................... create only the zip file without remote deploy
+    -h, --host .......................... remote MOTIF host to deploy
+    -p, --publish ....................... publish remotely for the given context
 
 Show syntax summary, or the help for a specific command.
