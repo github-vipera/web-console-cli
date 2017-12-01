@@ -25,6 +25,8 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
 
     this.spinner = ora('Deploying Console App...').start();
 
+    this.commandArgs = args;
+
     let distFolderExists = fs.existsSync("./dist");
     if (!distFolderExists){
         //console.log(chalk.red.bold("Dist folder not found. Run 'npm run build' command before and retry."));
@@ -42,8 +44,8 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
 
     this.createZip((zipFileName)=>{
         this.spinner = this.spinner.succeed("Distribution file ready " + zipFileName);
-        if (!args.offline){
-            this.remoteHost = args["remote-host"];
+        if (!this.commandArgs.offline){
+            this.remoteHost = this.commandArgs["remote-host"];
             this.deployRemote(zipFileName, (success)=>{
                 callback();
                 //TODO!!
@@ -101,20 +103,29 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
     try {
 
         let remoteUrl = this.remoteHost + '/rest/webcont/bundle/upload';
-        //remoteUrl = 'http://mockbin.com/request';
         unirest.post(remoteUrl)
             .headers({'Content-Type': 'multipart/form-data'})
             .field('parameter', 'value') // Form field
+            .auth({
+                user: this.commandArgs.user,
+                pass: this.commandArgs.passwd,
+                sendImmediately: true
+            })
             .attach('file', "./" + zipFileName) // Attachment
             .timeout(3000)
             .end(function(response) {
-                console.error(response);
+                if (response.error){
+                    this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
+                    failure(response.error);
+                } else {
+                    this.spinner = this.spinner.succeed("Remote deploy done.");
+                    success();
+                }
             });
 
     } catch (ex){
-        //this.spinner = this.spinner.fail("Remote deploy failure: " + ex);
-        //failure(ex);
-        console.error("ERROR FATAL: " , ex);
+        this.spinner = this.spinner.fail("Remote deploy failure: " + ex);
+        failure(ex);
     }
 
 

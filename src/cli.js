@@ -125,7 +125,9 @@ var knownOpts = {
     'description' : String,
     'offline' : Boolean,
     'remote-host' : String,
-    'publish' : String
+    'publish' : String,
+    'user' : String,
+    'passwd' : String
 };
 
 var shortHands = {
