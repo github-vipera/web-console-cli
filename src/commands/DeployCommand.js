@@ -23,6 +23,7 @@ function DeployCommand(){
 
 DeployCommand.prototype.execute = function(commands, args, callback) {
 
+
     this.spinner = ora('Deploying Console App...').start();
 
     this.commandArgs = args;
@@ -146,17 +147,15 @@ DeployCommand.prototype.publishRemote = function(success, failure) {
         let remoteUrl = this.remoteHost + '/rest/webcont/bundle/publish';
 
         unirest.post(remoteUrl)
-            .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+            .header({ 'Accept' : 'application/json' }, {'Content-Type': 'application/x-www-form-urlencoded'})
             .auth({
                 user: this.commandArgs.user,
                 pass: this.commandArgs.passwd,
                 sendImmediately: true
             })
-            .send({
-                "name": this.descriptor.name,
-                "version": this.descriptor.version,
-                "context" : this.commandArgs.publish
-            })
+            .form( { 'name': this.descriptor.name,
+                     'version' : this.descriptor.version,
+                     'context' : this.commandArgs.publish })
             .end((response) => {
                 if (response.error){
                     this.spinner = this.spinner.fail("Remote publishing failure: " + response.error);
