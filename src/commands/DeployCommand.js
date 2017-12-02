@@ -48,7 +48,7 @@ DeployCommand.prototype.execute = function(commands, args, callback) {
             this.remoteHost = this.commandArgs["remote-host"];
             this.deployRemote(zipFileName, (success)=>{
                 if (this.commandArgs.publish){
-                    this.publish((success)=>{
+                    this.publishRemote((success)=>{
                         callback();
                     }, (failure)=>{
                         callback();
