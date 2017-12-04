@@ -1,6 +1,6 @@
 Synopsis
 
-    wc-cli deploy -r [remotehost] -p [context]  ........... deploy current web console to a remote server and publish under the given context
+    wc-cli deploy -r [remotehost] -p [context] -username usr -passwd mypwd ........... deploy current web console to a remote server and publish under the given context
 
 Options
     -o, --offline ....................... create only the zip file without remote deploy
