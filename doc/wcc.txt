@@ -6,8 +6,9 @@ Global Commands
     create ............................. Create a module project or a web console console project
     install ............................ Install a web console module
     serve .............................. Run project with a local webserver
-    deploy ............................. Deploy a package into a remote MOTIF or for offline installation
+    deploy ............................. Deploy a web console into a remote MOTIF or for offline installation
     help ............................... Get help for a command
+    undeploy ........................... Un-deploy remotely a web console
 
 Learn more about command options using 'wc-cli help <command>'
 
