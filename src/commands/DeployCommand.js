@@ -12,6 +12,8 @@ const fs = require('fs-extra')
 var jsonfile = require('jsonfile');
 var EasyZip = require('easy-zip').EasyZip;
 var unirest = require('unirest');
+var async = require("async");
+
 
 /**
  *

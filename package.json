@@ -16,6 +16,7 @@
     "url": "https://github.com/github-vipera/web-console-cli"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "chalk": "^2.3.0",
     "easy-zip": "0.0.4",
     "fs-extra": "^4.0.2",
@@ -24,6 +25,7 @@
     "ora": "^1.3.0",
     "path": "^0.12.7",
     "q": "^1.5.1",
+    "runscript": "^1.3.0",
     "simple-git": "^1.83.0",
     "tmp": "0.0.33",
     "unirest": "^0.5.1",

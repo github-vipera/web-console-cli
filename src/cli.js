@@ -9,6 +9,7 @@ var nopt = require('nopt');
 var help = require('./help');
 var CreateCommand = require('./commands/CreateCommand');
 var DeployCommand = require('./commands/DeployCommand');
+var ServeCommand = require('./commands/ServeCommand');
 const updateNotifier = require('update-notifier-plus');
 const pkg = require('../package.json');
 
@@ -100,7 +101,9 @@ function cli (inputArgs, cb) {
     if (cmd === 'deploy'){
         return new DeployCommand().execute(remain, args, cb);
     }
-
+    if (cmd === 'serve'){
+        return new ServeCommand().execute(remain, args, cb);
+    }
 
     return printHelp(remain);
 
