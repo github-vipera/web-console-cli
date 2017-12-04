@@ -19,25 +19,24 @@ const runScript = require('runscript');
  * @constructor
  */
 function ServeCommand(){
-
+    this.isWin = /^win/.test(process.platform);
 }
 
 ServeCommand.prototype.execute = function(commands, args, callback) {
 
-    let cmd = 'npm  ';
-    //cmd = 'ls'
+    let cmd = this.prepareCommand("npm");
 
     this.spinner = ora('Serving Console App...').start();
 
-    /**
-    const child = spawn(cmd);
+    const child = spawn(cmd, [ 'run', 'start' ] );
 
     child.stdout.on('data', (data) => {
-        console.log(`child stdout:\n${data}`);
+        console.log(chalk.green(`${data}`));
     });
 
     child.stderr.on('data', (data) => {
-        console.error(`child stderr:\n${data}`);
+        console.error(chalk.red(`${data}`));
+        //this.spinner.fail('Serving Console App error.');
     });
 
     child.on('exit', (code, signal) =>{
@@ -46,20 +45,20 @@ ServeCommand.prototype.execute = function(commands, args, callback) {
         callback();
         this.spinner.stop();
     });
-     **/
-
-    runScript('npm run start', { stdio: 'pipe' })
-        .then(stdio => {
-            console.log(stdio.stdout.toString());
-        })
-        .catch(err => {
-            console.error(err);
-        });
 
 
 
 
 }
+
+
+ServeCommand.prototype.prepareCommand = function(cmd) {
+    if (this.isWin) {
+        cmd = cmd + ".cmd";
+    }
+    return cmd;
+}
+
 
 // export the class
 module.exports = ServeCommand;
