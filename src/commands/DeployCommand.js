@@ -124,6 +124,7 @@ DeployCommand.prototype.deployRemote = function(zipFileName, success, failure) {
             })
             .attach('file', localFileToUpload) // Attachment
             .end((response) => {
+                console.log("Error:", response.error);
                 if (response.error){
                     this.spinner = this.spinner.fail("Remote deploy failure: " + response.error);
                     failure(response.error);
@@ -160,7 +161,16 @@ DeployCommand.prototype.publishRemote = function(success, failure) {
                      'context' : this.commandArgs.publish })
             .end((response) => {
                 if (response.error){
-                    this.spinner = this.spinner.fail("Remote publishing failure: " + response.error);
+                    if (response.body && response.body.Details){
+                        var code = "";
+                        if (response.body.Code){
+                            code = "[" + response.body.Code +"]";
+                        }
+                        this.spinner = this.spinner.fail("Remote publishing failure: " + code + " " + response.body.Details);
+                    } else {
+                        this.spinner = this.spinner.fail("Remote publishing failure.");
+                        console.log("Response error: ", response);
+                    }
                     failure(response.error);
                 } else {
                     this.spinner = this.spinner.succeed("Remote publishing done.");
