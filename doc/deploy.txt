@@ -6,5 +6,7 @@ Options
     -o, --offline ....................... create only the zip file without remote deploy
     -r, --remote ........................ remote MOTIF host to deploy
     -p, --publish ....................... publish remotely for the given context
+    -user ............................... basic authentication user name
+    -passwd ............................. basic authentication user password
 
 Show syntax summary, or the help for a specific command.
