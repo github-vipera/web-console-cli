@@ -1,10 +1,10 @@
 Synopsis
 
-    wc-cli deploy -h [remotehost] -p [context]
+    wc-cli deploy -r [remotehost] -p [context]
 
 Options
     -o, --offline ....................... create only the zip file without remote deploy
-    -h, --host .......................... remote MOTIF host to deploy
+    -r, --remote ........................ remote MOTIF host to deploy
     -p, --publish ....................... publish remotely for the given context
 
 Show syntax summary, or the help for a specific command.

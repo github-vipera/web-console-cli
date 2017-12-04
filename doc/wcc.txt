@@ -16,6 +16,5 @@ Examples
     wc-cli create module -n my-admin-module
     wc-cli create module -n my-clock-module -t web-console-clock-template
     wc-cli create console -n my-web-admin
-    wc-cli pack -n my-web-admin -v 1.0.0
-    wc-cli deploy my-web-admin_1.0.0.zip -h https://remote.motif.com:8080/
+    wc-cli deploy -h https://remote.motif.com:8080/ -p webadmin
 
