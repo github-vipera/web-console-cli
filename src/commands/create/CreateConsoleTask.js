@@ -60,7 +60,7 @@ CreateConsoleTask.prototype.runTask= function(commands, args, callback) {
         console.log("");
         this.spinner = this.spinner.succeed("Creation console done.");
         console.log("");
-        console.log(chalk.green.bold("Next step are:"));
+        console.log(chalk.green.bold("Next steps are:"));
         console.log(chalk.green.bold("> cd " + this.consoleName));
         console.log(chalk.green.bold("> npm install "));
         console.log(chalk.green.bold("> npm run start "));

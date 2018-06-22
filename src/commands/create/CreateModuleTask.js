@@ -53,7 +53,7 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
         this.runNpmInstall();
         this.spinner = this.spinner.succeed("Creation module done.");
         console.log("");
-        console.log(chalk.green.bold("Next step are:"));
+        console.log(chalk.green.bold("Next steps are:"));
         console.log(chalk.green.bold("> cd " + this.moduleName));
         console.log(chalk.green.bold("> npm install "));
         console.log("");
