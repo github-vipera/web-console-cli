@@ -80,7 +80,7 @@ CreateModuleTask.prototype.runNpmInstall = function() {
 
 // Move the module form the temp folder to the current working dir
 CreateModuleTask.prototype.moveTempModule = function() {
-    fs.moveSync(this.prjTempFolder, './'+this.moduleName);
+    fs.moveSync(this.prjTempFolder, './projects/'+this.moduleName);
 }
 
 // Change package.json module name
