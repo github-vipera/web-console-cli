@@ -101,12 +101,14 @@ CreateConsoleTask.prototype.modifyModule = function() {
     packageJson.name = this.consoleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
 
+    /*
     // Update the .angular-cli.json file
     let angularCliJsonFile = path.join(this.prjTempFolder, ".angular-cli.json");
     let angularCliJson = jsonfile.readFileSync(angularCliJsonFile);
     angularCliJson.project.name = this.consoleName;
     jsonfile.writeFileSync(angularCliJsonFile, angularCliJson,   {spaces: 2, EOL: '\r\n'});
-
+    */
+   
     // Update the webconsole.descriptor.json file
     let webConsoleDescriptorJsonFile = path.join(this.prjTempFolder, "webconsole.descriptor.json");
     let webConsoleDescriptorJson = jsonfile.readFileSync(webConsoleDescriptorJsonFile);

@@ -50,11 +50,13 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
         this.spinner = this.spinner.succeed("Module template clone done.");
         this.modifyModule();
         this.moveTempModule();
-        this.runNpmInstall();
+        this.updateAngularJsonFile();
+        this.updateTSConfig();
+        //this.runNpmInstall();
         this.spinner = this.spinner.succeed("Creation module done.");
         console.log("");
         console.log(chalk.green.bold("Next steps are:"));
-        console.log(chalk.green.bold("> cd " + this.moduleName));
+        console.log(chalk.green.bold("> cd ./projects/" + this.moduleName));
         console.log(chalk.green.bold("> npm install "));
         console.log("");
         console.log("Enjoy!");
@@ -72,9 +74,38 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
 }
 
 
+CreateModuleTask.prototype.updateTSConfig = function() {
+    this.spinner = this.spinner.start("Updating TS configuration");
+
+    let tsConfigFile = path.join(".", "tsconfig.json");
+    let tsConfig = jsonfile.readFileSync(tsConfigFile);
+    
+    if (!tsConfig.compilerOptions.paths){
+        tsConfig.compilerOptions.paths = {};
+    }
+    
+    tsConfig.compilerOptions.paths[this.moduleName] = ['dist/' + this.moduleName];
+    tsConfig.compilerOptions.paths[this.moduleName + '/*'] = ['dist/' + this.moduleName + '/*'];
+
+    jsonfile.writeFileSync(tsConfigFile, tsConfig,   {spaces: 2, EOL: '\r\n'});
+
+    this.spinner = this.spinner.succeed("TS configuration updated.");
+}
+
+CreateModuleTask.prototype.updateAngularJsonFile = function() {
+    this.spinner = this.spinner.start("Updating console project");
+    let jsonAttr = this.createAngularJsonEntry();
+
+    let angularJsonFile = path.join(".", "angular.json");
+    let angularJson = jsonfile.readFileSync(angularJsonFile);
+    angularJson.projects[this.moduleName] = jsonAttr;
+    jsonfile.writeFileSync(angularJsonFile, angularJson,   {spaces: 2, EOL: '\r\n'});
+
+    this.spinner = this.spinner.succeed("Console project updated.");
+}
 
 CreateModuleTask.prototype.runNpmInstall = function() {
-    process.chdir('./' + this.moduleName);
+    //process.chdir('./' + this.moduleName);
     //console.log("Current folder is ", __dirname);
 }
 
@@ -86,10 +117,19 @@ CreateModuleTask.prototype.moveTempModule = function() {
 // Change package.json module name
 CreateModuleTask.prototype.modifyModule = function() {
     this.spinner = this.spinner.start("Preparing new module");
+    
+    // change package json
     let packageJsonFile = path.join(this.prjTempFolder, "package.json");
     let packageJson = jsonfile.readFileSync(packageJsonFile);
     packageJson.name = this.moduleName;
     jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
+
+    //change ng-package.json 
+    let ngPackageJsonFile = path.join(this.prjTempFolder, "ng-package.json");
+    let ngPackageJson = jsonfile.readFileSync(ngPackageJsonFile);
+    ngPackageJson.dest = "../../dist/" + this.moduleName;
+    jsonfile.writeFileSync(ngPackageJsonFile, ngPackageJson,   {spaces: 2, EOL: '\r\n'});
+    
     this.spinner = this.spinner.succeed("New module prepared.");
 }
 
@@ -126,6 +166,50 @@ CreateModuleTask.prototype.repoPathForTemplate = function(template) {
         return undefined;
     }
 
+}
+
+CreateModuleTask.prototype.createAngularJsonEntry = function() {
+    let entry = {
+        "root": "projects/" + this.moduleName,
+        "sourceRoot": "projects/"+this.moduleName+"/src",
+        "projectType": "library",
+        "prefix": "vp",
+        "architect": {
+          "build": {
+            "builder": "@angular-devkit/build-ng-packagr:build",
+            "options": {
+              "tsConfig": "projects/"+this.moduleName+"/tsconfig.lib.json",
+              "project": "projects/"+this.moduleName+"/ng-package.json"
+            },
+            "configurations": {
+              "production": {
+                "project": "projects/"+this.moduleName+"/ng-package.prod.json"
+              }
+            }
+          },
+          "test": {
+            "builder": "@angular-devkit/build-angular:karma",
+            "options": {
+              "main": "projects/"+this.moduleName+"/src/test.ts",
+              "tsConfig": "projects/"+this.moduleName+"/tsconfig.spec.json",
+              "karmaConfig": "projects/"+this.moduleName+"/karma.conf.js"
+            }
+          },
+          "lint": {
+            "builder": "@angular-devkit/build-angular:tslint",
+            "options": {
+              "tsConfig": [
+                "projects/"+this.moduleName+"/tsconfig.lib.json",
+                "projects/"+this.moduleName+"/tsconfig.spec.json"
+              ],
+              "exclude": [
+                "**/node_modules/**"
+              ]
+            }
+          }
+        }
+      };
+      return entry;
 }
 
 
