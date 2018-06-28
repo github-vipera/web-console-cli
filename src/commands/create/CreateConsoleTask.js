@@ -11,7 +11,7 @@ var tmp = require('tmp');
 var path = require('path');
 const fs = require('fs-extra');
 var jsonfile = require('jsonfile');
-
+const replaceInFile = require('replace-in-file');
 
 /**
  *
@@ -108,6 +108,9 @@ CreateConsoleTask.prototype.modifyModule = function() {
     angularCliJson.project.name = this.consoleName;
     jsonfile.writeFileSync(angularCliJsonFile, angularCliJson,   {spaces: 2, EOL: '\r\n'});
     */
+
+    // Update the angular.json file
+    this.updateAngularJsonFile();     
    
     // Update the webconsole.descriptor.json file
     let webConsoleDescriptorJsonFile = path.join(this.prjTempFolder, "webconsole.descriptor.json");
@@ -117,6 +120,25 @@ CreateConsoleTask.prototype.modifyModule = function() {
     jsonfile.writeFileSync(webConsoleDescriptorJsonFile, webConsoleDescriptorJson,   {spaces: 2, EOL: '\r\n'});
 
     this.spinner = this.spinner.succeed("New console prepared.");
+}
+
+CreateConsoleTask.prototype.updateAngularJsonFile = function() {
+
+    let angularJsonFile = path.join(this.prjTempFolder, "angular.json");
+
+    const options = {
+        files: angularJsonFile,
+        from: /web-console-template/g,
+        to: this.consoleName,
+      };
+      
+      try {
+        const changes = replaceInFile.sync(options);
+        console.log('Modified files:', changes.join(', '));
+      }
+      catch (error) {
+        console.error('Error occurred:', error);
+      }
 }
 
 CreateConsoleTask.prototype.cleanTempFolder = function() {
