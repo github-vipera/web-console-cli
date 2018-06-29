@@ -11,6 +11,8 @@ var CreateCommand = require('./commands/CreateCommand');
 var DeployCommand = require('./commands/DeployCommand');
 var ServeCommand = require('./commands/ServeCommand');
 var UndeployCommand = require('./commands/UndeployCommand');
+var TestCommand = require('./commands/TestCommand');
+
 const updateNotifier = require('update-notifier-plus');
 const pkg = require('../package.json');
 
@@ -107,6 +109,9 @@ function cli (inputArgs, cb) {
     }
     if (cmd === 'undeploy'){
         return new UndeployCommand().execute(remain, args, cb);
+    }
+    if (cmd === 'test'){
+        return new TestCommand().execute(remain, args, cb);
     }
 
     return printHelp(remain);
