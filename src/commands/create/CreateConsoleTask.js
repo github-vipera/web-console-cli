@@ -13,6 +13,8 @@ const fs = require('fs-extra');
 var jsonfile = require('jsonfile');
 const replaceInFile = require('replace-in-file');
 const inquirer = require('inquirer');
+const parse5 = require('parse5');
+const jp = require('jsonpath');
 
 /**
  *
@@ -116,8 +118,13 @@ CreateConsoleTask.prototype.modifyModule = function() {
 
                 // Update the Console Descriptor JSON file 
                 this.updateConsoleDescriptorJsonFile().then(()=>{
+                    
+                    this.updateHTML().then(()=>{
+                        resolve();
+                    }, (error)=>{
+                        reject(error);
+                    });
 
-                    resolve();
                 }, (error)=>{
                     reject(error);
                 });
@@ -134,6 +141,52 @@ CreateConsoleTask.prototype.modifyModule = function() {
 
 
 }
+
+CreateConsoleTask.prototype.updateHTML = function() {
+
+    return new Promise((resolve,reject)=>{
+
+        var questions = [
+            {
+                type: 'input',
+                name: 'title',
+                message: 'Enter the title of your new console:'
+            }
+        ];
+
+        this.spinner = this.spinner.stop();
+
+        inquirer.prompt(questions).then( (answers) => {
+
+            //update the HTML content
+            let indexHtmlFile = path.join(this.prjTempFolder, "src", "index.html");
+            const options = {
+                files: indexHtmlFile,
+                from: '<title>Demo</title>',
+                to: '<title>'+answers.title+'</title>',
+            };
+            try {
+                const changes = replaceInFile.sync(options);
+                console.log('Modified files:', changes.join(', '));
+                resolve();
+            } catch (error) {
+                console.error('Error occurred:', error);
+                reject(error);
+            }
+ 
+        }, (error)=>{
+            reject(error);
+        });
+
+    });
+}
+
+CreateConsoleTask.prototype.loadHTML = function(file) {
+    var contents = fs.readFileSync(file, 'utf8');
+    const document = parse5.parse(contents);
+    return document;
+}
+
 
 CreateConsoleTask.prototype.updateConsoleDescriptorJsonFile = function() {
 

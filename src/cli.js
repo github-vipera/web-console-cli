@@ -12,6 +12,7 @@ var DeployCommand = require('./commands/DeployCommand');
 var ServeCommand = require('./commands/ServeCommand');
 var UndeployCommand = require('./commands/UndeployCommand');
 var TestCommand = require('./commands/TestCommand');
+var figlet = require('figlet');
 
 const updateNotifier = require('update-notifier-plus');
 const pkg = require('../package.json');
@@ -42,15 +43,21 @@ module.exports = function (inputArgs, cb) {
         cmd = 'help';
     }
 
+    figlet('Motif Web Console CLI', function(err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(data)
+        cli(inputArgs, cb);
+    });
 
-    cli(inputArgs, cb);
 
 }
 
 
 function cli (inputArgs, cb) {
-
-    //checkForUpdates();
 
     var args = nopt(knownOpts, shortHands, inputArgs);
 
@@ -69,6 +76,7 @@ function cli (inputArgs, cb) {
     console.log(chalk.blue.bold("MOTIF Web Console CLI - Vipera © 2017-2018"));
     console.log(chalk.blue("Version " , cliVersion));
     console.log('');
+
 
     // If there were arguments protected from nopt with a double dash, keep
     // them in unparsedArgs. For example:
