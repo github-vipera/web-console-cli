@@ -5,12 +5,13 @@
 const ora = require('ora');
 const chalk = require('chalk');
 const simpleGit = require('simple-git');
-var Q = require("q");
+const Q = require("q");
 const git = require('simple-git/promise');
-var tmp = require('tmp');
-var path = require('path');
+const tmp = require('tmp');
+const path = require('path');
 const fs = require('fs-extra');
-var jsonfile = require('jsonfile');
+const jsonfile = require('jsonfile');
+const inquirer = require('inquirer');
 
 /**
  *
@@ -48,20 +49,29 @@ CreateModuleTask.prototype.runTask= function(commands, args, callback) {
 
     this.cloneTemplateRepo().then(() => {
         this.spinner = this.spinner.succeed("Module template clone done.");
-        this.modifyModule();
-        this.moveTempModule();
-        this.updateAngularJsonFile();
-        this.updateTSConfig();
-        //this.runNpmInstall();
-        this.spinner = this.spinner.succeed("Creation module done.");
-        console.log("");
-        console.log(chalk.green.bold("Next steps are:"));
-        console.log(chalk.green.bold("> cd ./projects/" + this.moduleName));
-        console.log(chalk.green.bold("> npm install "));
-        console.log("");
-        console.log("Enjoy!");
-        console.log("");
-        this.cleanTempFolder();
+        this.modifyModule().then(()=>{
+
+            this.moveTempModule();
+            this.updateAngularJsonFile();
+            this.updateTSConfig();
+            //this.runNpmInstall();
+            this.spinner = this.spinner.succeed("Creation module done.");
+            console.log("");
+            console.log(chalk.green.bold("Next steps are:"));
+            console.log(chalk.green.bold("> cd ./projects/" + this.moduleName));
+            console.log(chalk.green.bold("> npm install "));
+            console.log("");
+            console.log("Enjoy!");
+            console.log("");
+            this.cleanTempFolder();
+    
+        }, (error)=>{
+            console.log("Error: ", error);
+            console.log("");
+            this.cleanTempFolder();
+            this.spinner.fail(error);
+        });
+
     }).catch((err) => {
         console.log("Error: ", err);
         console.log("");
@@ -116,21 +126,27 @@ CreateModuleTask.prototype.moveTempModule = function() {
 
 // Change package.json module name
 CreateModuleTask.prototype.modifyModule = function() {
-    this.spinner = this.spinner.start("Preparing new module");
-    
-    // change package json
-    let packageJsonFile = path.join(this.prjTempFolder, "package.json");
-    let packageJson = jsonfile.readFileSync(packageJsonFile);
-    packageJson.name = this.moduleName;
-    jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
 
-    //change ng-package.json 
-    let ngPackageJsonFile = path.join(this.prjTempFolder, "ng-package.json");
-    let ngPackageJson = jsonfile.readFileSync(ngPackageJsonFile);
-    ngPackageJson.dest = "../../dist/" + this.moduleName;
-    jsonfile.writeFileSync(ngPackageJsonFile, ngPackageJson,   {spaces: 2, EOL: '\r\n'});
+    return new Promise((resolve,reject)=>{
+        this.spinner = this.spinner.start("Preparing new module");
     
-    this.spinner = this.spinner.succeed("New module prepared.");
+        // change package json
+        let packageJsonFile = path.join(this.prjTempFolder, "package.json");
+        let packageJson = jsonfile.readFileSync(packageJsonFile);
+        packageJson.name = this.moduleName;
+        jsonfile.writeFileSync(packageJsonFile, packageJson,   {spaces: 2, EOL: '\r\n'});
+    
+        //change ng-package.json 
+        let ngPackageJsonFile = path.join(this.prjTempFolder, "ng-package.json");
+        let ngPackageJson = jsonfile.readFileSync(ngPackageJsonFile);
+        ngPackageJson.dest = "../../dist/" + this.moduleName;
+        jsonfile.writeFileSync(ngPackageJsonFile, ngPackageJson,   {spaces: 2, EOL: '\r\n'});
+        
+        this.spinner = this.spinner.succeed("New module prepared.");
+        
+        resolve();
+    });
+
 }
 
 CreateModuleTask.prototype.cleanTempFolder = function() {

@@ -5,16 +5,14 @@
 const ora = require('ora');
 const chalk = require('chalk');
 const simpleGit = require('simple-git');
-var Q = require("q");
+const Q = require("q");
 const git = require('simple-git/promise');
-var tmp = require('tmp');
-var path = require('path');
+const tmp = require('tmp');
+const path = require('path');
 const fs = require('fs-extra');
-var jsonfile = require('jsonfile');
+const jsonfile = require('jsonfile');
 const replaceInFile = require('replace-in-file');
 const inquirer = require('inquirer');
-const parse5 = require('parse5');
-const jp = require('jsonpath');
 
 /**
  *
