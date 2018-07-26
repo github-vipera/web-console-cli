@@ -141,6 +141,12 @@ CreateModuleTask.prototype.modifyModule = function() {
         let ngPackageJson = jsonfile.readFileSync(ngPackageJsonFile);
         ngPackageJson.dest = "../../dist/" + this.moduleName;
         jsonfile.writeFileSync(ngPackageJsonFile, ngPackageJson,   {spaces: 2, EOL: '\r\n'});
+
+        //change ng-package.prod.json 
+        ngPackageJsonFile = path.join(this.prjTempFolder, "ng-package.prod.json");
+        ngPackageJson = jsonfile.readFileSync(ngPackageJsonFile);
+        ngPackageJson.dest = "../../dist/" + this.moduleName;
+        jsonfile.writeFileSync(ngPackageJsonFile, ngPackageJson,   {spaces: 2, EOL: '\r\n'});
         
         this.spinner = this.spinner.succeed("New module prepared.");
         
