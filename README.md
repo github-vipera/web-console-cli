@@ -19,4 +19,3 @@ Run command:
 wcc create module -n very-simple-module
 ```
 
- 
