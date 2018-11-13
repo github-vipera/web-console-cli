@@ -1,6 +1,7 @@
 # web-console-cli
 Web Console CLI
 
+You can use this tool in order to create a Web Console module.
 
 ### How to install
 Run command:
@@ -18,3 +19,4 @@ Run command:
 wcc create module -n very-simple-module
 ```
 
+ 
