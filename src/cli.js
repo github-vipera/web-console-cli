@@ -73,7 +73,7 @@ function cli (inputArgs, cb) {
     var cliVersion = require('../package').version;
 
     console.log('');
-    console.log(chalk.blue.bold("MOTIF Web Console CLI - Vipera © 2017-2018"));
+    console.log(chalk.blue.bold("MOTIF Web Console CLI - Vipera © 2017-2019"));
     console.log(chalk.blue("Version " , cliVersion));
     console.log('');
 
